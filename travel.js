@@ -1,31 +1,31 @@
 const express = require('express')
 const app = express()
+const handlebars = require('express-handlebars').create({defaultLayout: 'main'})
 
 app.set('port', process.env.PORT || 5000)
+app.use(express.static(__dirname + '/public'))
+
+//Set up handlebars view engine
+app.engine('handlebars', handlebars.engine)
+app.set('view engine', 'handlebars')
 
 app.get('/', function(req, res){
-    res.type('text/plain');
-    res.send('Meadowlark Travel');
+    res.render('home');
 });
 
 app.get('/about', function(req, res){
-    res.type('text/plain');
-    res.send('About Meadowlark Travel');
+    res.render('about');
 });
 
 // custom 404 page
 app.use(function(req, res){
-    res.type('text/plain');
-    res.status(404);
-    res.send('404 - Not Found');
+    res.status(404).render('404');
 });
     
 // custom 500 page
 app.use(function(err, req, res, next){
     console.error(err.stack);
-    res.type('text/plain');
-    res.status(500);
-    res.send('500 - Server Error');
+    res.status(500).render('500');
 });
 
 app.listen(app.get('port'), () => {
