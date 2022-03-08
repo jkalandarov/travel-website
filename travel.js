@@ -6,6 +6,10 @@ const fortune = require('./lib/fortune')
 
 app.set('port', process.env.PORT || 5000)
 app.use(express.static(__dirname + '/public'));
+app.use((req, res, next) => {
+    res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
+    next();
+})
 
 //Set up handlebars view engine
 app.engine('handlebars', handlebars.engine)
@@ -16,7 +20,6 @@ app.get('/', function(req, res){
 });
 
 app.get('/about', function(req, res){
-
     res.render('about', {fortune: fortune.getFortune()});
 });
 
